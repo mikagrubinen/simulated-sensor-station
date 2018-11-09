@@ -1,6 +1,11 @@
 import nodes
 import sensors
+from flask import Flask
+app = Flask(__name__)
 
+@app.route("/")
+def hello():
+    return "Hello World!"
 
 new = sensors.sensor.Sensor()
 print(new.get_all_param())
@@ -29,8 +34,10 @@ pres = sensors.pressure.Pressure()
 print(pres.get_unit())
 
 print("############")
-
+# create instance of a Node class
 node1 = nodes.node.Node()
-print(node1.get_in())
-
+my_list = [1,2,3,4]
+#node1.set_sensor_list(my_list)
+a = node1.get_all_param()
+print(a['sensor_list'])
 
