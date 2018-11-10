@@ -1,11 +1,52 @@
 import nodes
 import sensors
-from flask import Flask
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+# @app.route("/")
+# def hello():
+#     return render_template("student.html")
+
+
+###############################################################
+@app.route('/')
+def student():
+   return render_template('student.html')
+
+@app.route('/result', methods = ['POST', 'GET'])
+def result():
+   if request.method == 'POST':
+      result = request.form
+      return render_template("result.html",result = result)
+
+if __name__ == '__main__':
+   app.run(debug = True)
+###############################################################
+
+street_list = ['first', 'second']
+cluster_list = []
+
+
+def add_cluster(number_of_clusters = None, street = ''):
+    if number_of_clusters < 1:
+        print('Error: Invalid input! Number of clusters must be greater than 0')
+    else:
+        for x in range(0, number_of_clusters):
+            cluster_id = len(cluster_list) + 1
+            cluster_name = 'cluster' + str(cluster_id)
+
+            if street == '':
+                cluster_name = nodes.cluster.Cluster(cluster_id)
+                cluster_list.append(cluster_name)
+            else:
+                cluster_name = nodes.cluster.Cluster(cluster_id, street = street)
+                cluster_list.append(cluster_name)
+
+
+add_cluster(100, "santa clara")
+print(cluster_list[0].get_id())
+print(cluster_list[0].get_street())
+
 
 new = sensors.sensor.Sensor()
 print(new.get_all_param())
