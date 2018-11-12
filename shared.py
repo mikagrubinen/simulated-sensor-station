@@ -1,1 +1,2 @@
-cluster_list = []
+cluster_list = {}
+street_list = []

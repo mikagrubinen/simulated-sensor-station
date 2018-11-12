@@ -9,7 +9,6 @@ app = Flask(__name__)
 # def hello():
 #     return render_template("student.html")
 
-
 ##########################################################################
 # @app.route('/')
 # def student():
@@ -24,22 +23,24 @@ app = Flask(__name__)
 # if __name__ == '__main__':
 #    app.run(debug = True)
 ##########################################################################
-
-street_list = ['first', 'second']
-
 # Two ways to add cluster. With street name and w/o
-# do.add_cluster(cluster_list, 100, "santa clara")
+do.add_cluster(3, "main")
+do.add_cluster(3, "santa clara")
+do.add_cluster(3, "second")
 # do.add_cluster(5)
-# print(shared.cluster_list[4].get_id())
-# print(cluster_list[100].get_street())
-# print(shared.cluster_list)
-# shared.cluster_list.remove('cluster2')
+# print(shared.cluster_list['cluster2'].get_id())
+print(shared.cluster_list)
+print(shared.street_list)
 ##########################################################################
 # Delete cluster. Two ways. Single or multiple clusters
 # Single. Based on cluster id
 # do.delete_single_cluster(2)
 # print(shared.cluster_list)
 # Multiple. Based on street or id range
+# do.delete_clusters_street('santa clara')
+do.delete_clusters_range(2, 4)
+print(shared.cluster_list)
+print(shared.street_list)
 ##########################################################################
 # new = sensors.sensor.Sensor()
 # print(new.get_all_param())
