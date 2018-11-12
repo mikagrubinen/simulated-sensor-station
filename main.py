@@ -1,5 +1,7 @@
 import nodes
 import sensors
+import do
+import shared
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -8,77 +10,65 @@ app = Flask(__name__)
 #     return render_template("student.html")
 
 
-###############################################################
-@app.route('/')
-def student():
-   return render_template('student.html')
-
-@app.route('/result', methods = ['POST', 'GET'])
-def result():
-   if request.method == 'POST':
-      result = request.form
-      return render_template("result.html",result = result)
-
-if __name__ == '__main__':
-   app.run(debug = True)
-###############################################################
+##########################################################################
+# @app.route('/')
+# def student():
+#    return render_template('student.html')
+#
+# @app.route('/result', methods = ['POST', 'GET'])
+# def result():
+#    if request.method == 'POST':
+#       result = request.form
+#       return render_template("result.html",result = result)
+#
+# if __name__ == '__main__':
+#    app.run(debug = True)
+##########################################################################
 
 street_list = ['first', 'second']
-cluster_list = []
 
-
-def add_cluster(number_of_clusters = None, street = ''):
-    if number_of_clusters < 1:
-        print('Error: Invalid input! Number of clusters must be greater than 0')
-    else:
-        for x in range(0, number_of_clusters):
-            cluster_id = len(cluster_list) + 1
-            cluster_name = 'cluster' + str(cluster_id)
-
-            if street == '':
-                cluster_name = nodes.cluster.Cluster(cluster_id)
-                cluster_list.append(cluster_name)
-            else:
-                cluster_name = nodes.cluster.Cluster(cluster_id, street = street)
-                cluster_list.append(cluster_name)
-
-
-add_cluster(100, "santa clara")
-print(cluster_list[0].get_id())
-print(cluster_list[0].get_street())
-
-
-new = sensors.sensor.Sensor()
-print(new.get_all_param())
-
+# Two ways to add cluster. With street name and w/o
+# do.add_cluster(cluster_list, 100, "santa clara")
+# do.add_cluster(5)
+# print(shared.cluster_list[4].get_id())
+# print(cluster_list[100].get_street())
+# print(shared.cluster_list)
+# shared.cluster_list.remove('cluster2')
+##########################################################################
+# Delete cluster. Two ways. Single or multiple clusters
+# Single. Based on cluster id
+# do.delete_single_cluster(2)
+# print(shared.cluster_list)
+# Multiple. Based on street or id range
+##########################################################################
+# new = sensors.sensor.Sensor()
+# print(new.get_all_param())
 # new.set_all_param(1, "active", "First St", 11)
-#
 # all_param = new.get_all_param()
-#
 # print(type(all_param))
-#
 # print(all_param['street'])
-#
 # print(new.get_state())
+##########################################################################
+# create temperature class instance
+# temp1 = sensors.temperature.Temperature()
+# print(temp1.get_temperature())
 
-# create temp class instance
-new1 = sensors.temperature.Temperature()
-print(new1.get_temperature())
-# set id for temp instance by using inherited super class methods
-new1.set_id(3)
-print(new1.get_id())
-
-lig = sensors.light.Light()
-print(lig.get_light())
-
-pres = sensors.pressure.Pressure()
-print(pres.get_unit())
-
-print("############")
+# set id for temperature instance by using inherited super class methods
+# temp1.set_id(3)
+# print(temp1.get_id())
+##########################################################################
+# create light class instance
+# ligh = sensors.light.Light()
+# print(ligh.get_light())
+##########################################################################
+# create pressure class instance
+# pres = sensors.pressure.Pressure()
+# print(pres.get_unit())
+##########################################################################
 # create instance of a Node class
-node1 = nodes.node.Node()
-my_list = [1,2,3,4]
-#node1.set_sensor_list(my_list)
-a = node1.get_all_param()
-print(a['sensor_list'])
-
+# node1 = nodes.node.Node()
+# my_list = [1,2,3,4]
+# node1.set_sensor_list(my_list)
+# a = node1.get_all_param()
+# print(a['sensor_list'])
+##########################################################################
