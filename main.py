@@ -32,15 +32,20 @@ do.add_cluster(3, "second")
 print(shared.cluster_list)
 print(shared.street_list)
 ##########################################################################
-# Delete cluster. Two ways. Single or multiple clusters
-# Single. Based on cluster id
+# Delete cluster. Two ways. Based on list or on street name
+# Single. Send list with only one cluster id
+# list = [2]
+# do.delete_list_of_clusters(list)
+# or
 # do.delete_single_cluster(2)
 # print(shared.cluster_list)
-# Multiple. Based on street or id range
-# do.delete_clusters_street('santa clara')
-do.delete_clusters_range(2, 4)
-print(shared.cluster_list)
-print(shared.street_list)
+
+# Multiple. Based on street or list of id's
+# do.delete_clusters_street('santa')
+# list = [2,11,3, 87]
+# a = do.delete_list_of_clusters(list)
+# print(shared.cluster_list)
+# print(a)
 ##########################################################################
 # new = sensors.sensor.Sensor()
 # print(new.get_all_param())
