@@ -37,10 +37,18 @@ app = Flask(__name__)
 # Multiple. Based on street
 # do.delete_clusters_street('first')
 ######################## Working with nodes #############################
-a = do.add_node(2, 15)
+# a = do.add_node(3, 0)
 # print(shared.node_list)
-print(a)
+# print(a)
 
+# delete nodes based on cluster id
+# a = do.delete_nodes_cluster(0)
+# print(a)
+
+# Delete list of nodes
+list = [45]
+a = do.delete_list_of_nodes(list)
+print(a)
 ##########################################################################
 # new = sensors.sensor.Sensor()
 # print(new.get_all_param())
