@@ -24,28 +24,23 @@ app = Flask(__name__)
 #    app.run(debug = True)
 ##########################################################################
 # Two ways to add cluster. With street name and w/o
-do.add_cluster(3, "main")
-do.add_cluster(3, "santa clara")
-do.add_cluster(3, "second")
-# do.add_cluster(5)
-# print(shared.cluster_list['cluster2'].get_id())
-print(shared.cluster_list)
-print(shared.street_list)
+# do.add_cluster(1, "second")
+
+# do.add_cluster(100)
 ##########################################################################
 # Delete cluster. Two ways. Based on list or on street name
-# Single. Send list with only one cluster id
-# list = [2]
-# do.delete_list_of_clusters(list)
-# or
-# do.delete_single_cluster(2)
-# print(shared.cluster_list)
-
-# Multiple. Based on street or list of id's
-# do.delete_clusters_street('santa')
-# list = [2,11,3, 87]
+# Single. Send list with only one cluster id/ multiple, send list with multiple cluster id
+# list = [1,2]
 # a = do.delete_list_of_clusters(list)
-# print(shared.cluster_list)
 # print(a)
+
+# Multiple. Based on street
+# do.delete_clusters_street('first')
+######################## Working with nodes #############################
+a = do.add_node(2, 15)
+# print(shared.node_list)
+print(a)
+
 ##########################################################################
 # new = sensors.sensor.Sensor()
 # print(new.get_all_param())
