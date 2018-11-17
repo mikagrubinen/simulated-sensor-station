@@ -2,7 +2,7 @@ import nodes
 import shared
 import pickle
 
-############################## Working with Clusters ###############################
+###################################### Working with Clusters #######################################
 
 # Adds new clusters to a cluster_database. Creates number of Clusters to be added
 # @param number_of_clusters - defines number of new clusters to be added
@@ -68,9 +68,9 @@ def delete_list_of_clusters(list):
         return "Clusters " + str(return_list) + " not deleted. Not in a system."
 
 
-############################## Working with Nodes ###############################
+###################################### Working with Nodes #######################################
 
-# Add new nodes to node database.
+# Add new nodes to node database. Cluster id should be mandatory
 def add_node(number_of_nodes = None, cluster_id = None, street = None,):
 
     if number_of_nodes < 1:
@@ -145,7 +145,160 @@ def delete_list_of_nodes(list):
     else:
         return "Nodes " + str(return_list) + " not deleted. Not in a system."
 
-############################## Working with Pickle ###############################
+###################################### Working with Sensors #######################################
+
+# Add sensors to a cluster or to a node.
+# @param list - list of types of sensors to be added (eg. ['temp', 'pressure']
+def add_sensors(cluster_id = None, node_id = None, list = []):
+
+    if cluster_id is None and node_id is None:
+        return "Error: Invalid input!"
+
+    elif cluster_id is not None and node_id is not None:
+        return "Error: Invalid input!"
+
+    elif cluster_id is not None and node_id is None:
+
+        cluster_database = load_obj(shared.cluster_database)
+        cluster_name = 'cluster' + str(cluster_id)
+
+        if cluster_name in cluster_database:
+
+            if not list:
+                return "Error: List of sensors is empty!"
+            else:
+                sensor_database = load_obj(shared.sensor_database)
+                sensor_to_list = []
+
+                for item in list:
+                    sensor_id = len(sensor_database)
+                    sensor_name = 'sensor' + str(sensor_id)
+                    sensor_database[sensor_name] = {'id' : sensor_id, 'state' : None, 'street' : None, 'cluster_id' : cluster_name, 'node_id' : node_id, 'sensor_type' : item}
+                    sensor_to_list.append(sensor_name)
+
+                cluster_database[cluster_name]["sensor_list"] = cluster_database[cluster_name]["sensor_list"] + sensor_to_list
+                save_obj(sensor_database, shared.sensor_database)
+                save_obj(cluster_database, shared.cluster_database)
+        else:
+            return "Error: Invalid cluster ID!"
+
+    elif cluster_id is None and node_id is not None:
+
+        node_database = load_obj(shared.node_database)
+        node_name = 'node' + str(node_id)
+
+        if node_name in node_database:
+
+            if not list:
+                return "Error: List of sensors is empty!"
+            else:
+                sensor_database = load_obj(shared.sensor_database)
+                sensor_to_list = []
+
+                for item in list:
+                    sensor_id = len(sensor_database)
+                    sensor_name = 'sensor' + str(sensor_id)
+                    sensor_database[sensor_name] = {'id' : sensor_id, 'state' : None, 'street' : None, 'cluster_id' : cluster_id, 'node_id' : node_name, 'sensor_type' : item}
+                    sensor_to_list.append(sensor_name)
+
+                node_database[node_name]["sensor_list"] = node_database[node_name]["sensor_list"] + sensor_to_list
+                save_obj(sensor_database, shared.sensor_database)
+                save_obj(node_database, shared.node_database)
+        else:
+            return "Error: Invalid node ID!"
+
+# Delete all sensors connected to cluster or a node
+def delete_sensors(cluster_id = None, node_id = None):
+
+    if cluster_id is None and node_id is None:
+        return "Error: Invalid input!"
+
+    elif cluster_id is not None and node_id is not None:
+        return "Error: Invalid input!"
+
+    elif cluster_id is not None and node_id is None:
+
+        cluster_database = load_obj(shared.cluster_database)
+        cluster_name = 'cluster' + str(cluster_id)
+
+        if cluster_name in cluster_database:
+            sensors_to_delete = cluster_database[cluster_name]['sensor_list']
+
+            if not sensors_to_delete:
+                return "This cluster has no sensors connected to it!"
+            else:
+                delete_sensors_helper(sensors_to_delete)
+                cluster_database[cluster_name]["sensor_list"] = []
+                save_obj(cluster_database, shared.cluster_database)
+        else:
+            return "Error: Invalid cluster ID!"
+
+    elif cluster_id is None and node_id is not None:
+
+        node_database = load_obj(shared.node_database)
+        node_name = 'node' + str(node_id)
+
+        if node_name in node_database:
+            sensors_to_delete = node_database[node_name]['sensor_list']
+
+            if not sensors_to_delete:
+                return "This node has no sensors connected to it!"
+            else:
+                delete_sensors_helper(sensors_to_delete)
+                node_database[node_name]["sensor_list"] = []
+                save_obj(node_database, shared.node_database)
+        else:
+            return "Error: Invalid node ID!"
+
+# Delete sensors all from in a list
+def delete_list_of_sensors(list = []):
+
+    if not list:
+        return "Error: List of sensors can't be empty!"
+    else:
+        return_list = []
+        sensor_database = load_obj(shared.sensor_database)
+        node_database = load_obj(shared.node_database)
+        cluster_database = load_obj(shared.cluster_database)
+
+        for item in list:
+            sensor_name = 'sensor' + str(item)
+
+            if sensor_name in sensor_database:
+
+                cluster_name = sensor_database[sensor_name]['cluster_id']
+                node_name = sensor_database[sensor_name]['node_id']
+
+                if cluster_name is not None and cluster_name in cluster_database:
+                    cluster_database[cluster_name]['sensor_list'].remove(sensor_name)
+                if node_name is not None and node_name in node_database:
+                    node_database[node_name]['sensor_list'].remove(sensor_name)
+
+                del sensor_database[sensor_name]
+            else:
+                return_list.append(sensor_name)
+
+        save_obj(sensor_database, shared.sensor_database)
+        save_obj(node_database, shared.node_database)
+        save_obj(cluster_database, shared.cluster_database)
+
+        if not return_list:
+            return "Sensors deleted"
+        else:
+            return "Sensors " + str(return_list) + " not deleted. Not in a system."
+
+# Helper function to delete sensors
+# @param sensors_to_delete - list of sensors to be deleted
+def delete_sensors_helper(sensors_to_delete):
+
+    sensor_database = load_obj(shared.sensor_database)
+
+    for item in sensors_to_delete:
+        del sensor_database[item]
+
+    save_obj(sensor_database, shared.sensor_database)
+
+###################################### Working with Pickle #######################################
 
 def save_obj(obj, name):
     with open('obj/'+ name + '.pkl', 'wb') as f:

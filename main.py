@@ -22,12 +22,12 @@ app = Flask(__name__)
 #
 # if __name__ == '__main__':
 #    app.run(debug = True)
-##########################################################################
+######################## Working with clusters ############################
 # Two ways to add cluster. With street name and w/o
 # do.add_cluster(1, "second")
 
 # do.add_cluster(100)
-##########################################################################
+
 # Delete cluster. Two ways. Based on list or on street name
 # Single. Send list with only one cluster id/ multiple, send list with multiple cluster id
 # list = [1,2]
@@ -46,9 +46,20 @@ app = Flask(__name__)
 # print(a)
 
 # Delete list of nodes
-list = [45]
-a = do.delete_list_of_nodes(list)
-print(a)
+# list = [45]
+# a = do.delete_list_of_nodes(list)
+# print(a)
+######################## Working with sensors ############################
+# sensor_list = ['temp', 'pressure', 'light']
+# a = do.add_sensors(2, None, sensor_list)
+# print(a)
+
+# a = do.delete_sensors( None, 4)
+# print(a)
+
+# list = [2,7]
+# a = do.delete_list_of_sensors(list)
+# print(a)
 ##########################################################################
 # new = sensors.sensor.Sensor()
 # print(new.get_all_param())
