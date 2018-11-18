@@ -2,26 +2,68 @@ import nodes
 import sensors
 import do
 import shared
-from flask import Flask, render_template, request
+import json
+from flask import Flask, render_template, request, flash, redirect, url_for
 app = Flask(__name__)
+app.secret_key = 'random string'
 
 # @app.route("/")
 # def hello():
 #     return render_template("student.html")
 
-##########################################################################
 # @app.route('/')
 # def student():
-#    return render_template('student.html')
-#
-# @app.route('/result', methods = ['POST', 'GET'])
-# def result():
-#    if request.method == 'POST':
-#       result = request.form
-#       return render_template("result.html",result = result)
-#
-# if __name__ == '__main__':
-#    app.run(debug = True)
+#     return render_template('student.html')
+##########################################################################
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/messages')
+def messages():
+    return render_template('messages.html')
+
+@app.route('/result', methods = ['POST', 'GET'])
+def result():
+    if request.method == 'POST':
+        result = request.form
+        return render_template("result.html",result = result)
+
+@app.route('/addcluster', methods = ['POST', 'GET'])
+def addcluster():
+    error = None
+    if request.method == 'POST':
+        number = int(request.form['number'])
+        street = request.form['street']
+        if number < 101:
+            if do.add_cluster(number, street) == 0:
+                flash('Clusters successfully added')
+                return redirect(url_for('messages'))
+        else:
+            error = 'Entered number must be less than or equal to 100'
+
+    return render_template("addcluster.html", error = error)
+
+@app.route('/addnode', methods = ['POST', 'GET'])
+def addnode():
+    cluster_database = do.load_obj(shared.cluster_database)
+
+    if request.method == 'POST':
+        number = int(request.form['number'])
+        cluster = request.form['cluster']
+        street = request.form['street']
+        if do.add_node(number, cluster, street) == 0:
+            flash('Nodes successfully added')
+            return redirect(url_for('messages'))
+        elif do.add_node(number, cluster, street) == "Error: Invalid cluster ID!":
+            flash("Error")
+            return redirect(url_for('messages'))
+
+    return render_template("addnode.html", cluster_database = cluster_database)
+
+if __name__ == '__main__':
+    app.run(debug = True)
+
 ######################## Working with clusters ############################
 # Two ways to add cluster. With street name and w/o
 # do.add_cluster(1, "second")

@@ -25,6 +25,7 @@ def add_cluster(number_of_clusters = None, street = None):
 
         save_obj(cluster_database, shared.cluster_database)
         save_obj(street_list, shared.street_list)
+        return 0
 
 
 # Delete all clusters from cluster_database based on street name
@@ -71,13 +72,13 @@ def delete_list_of_clusters(list):
 ###################################### Working with Nodes #######################################
 
 # Add new nodes to node database. Cluster id should be mandatory
-def add_node(number_of_nodes = None, cluster_id = None, street = None,):
+def add_node(number_of_nodes = None, cluster_name = None, street = None,):
 
     if number_of_nodes < 1:
         return "Error: Invalid input! Number of nodes must be greater than 0!"
     else:
         cluster_database = load_obj(shared.cluster_database)
-        cluster_name = 'cluster' + str(cluster_id)
+        # cluster_name = 'cluster' + str(cluster_id)
 
         if cluster_name in cluster_database:
 
@@ -94,8 +95,10 @@ def add_node(number_of_nodes = None, cluster_id = None, street = None,):
             cluster_database[cluster_name]["node_list"] = cluster_database[cluster_name]["node_list"] + node_to_cluster_list
             save_obj(node_database, shared.node_database)
             save_obj(cluster_database, shared.cluster_database)
+            return 0
         else:
             return "Error: Invalid cluster ID!"
+
 
 # Delete all nodes connected to a cluster
 def delete_nodes_cluster(cluster_id):
@@ -148,7 +151,7 @@ def delete_list_of_nodes(list):
 ###################################### Working with Sensors #######################################
 
 # Add sensors to a cluster or to a node.
-# @param list - list of types of sensors to be added (eg. ['temp', 'pressure']
+# @param list - list of types of sensors to be added (eg. ['temp', 'pressure'])
 def add_sensors(cluster_id = None, node_id = None, list = []):
 
     if cluster_id is None and node_id is None:
