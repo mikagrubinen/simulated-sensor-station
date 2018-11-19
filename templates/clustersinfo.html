@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <body>
+    {% include 'nav.html' %}
+
+    {% block content %}
+
+    {% with messages = get_flashed_messages() %}
+     {% if messages %}
+        <ul>
+           {% for message in messages %}
+           <li<{{ message }}</li>
+           {% endfor %}
+        </ul>
+     {% endif %}
+    {% endwith %}
+
+
+
+        <div style="padding-left:16px">
+
+            {% for key, value in cluster_database.items() %}
+
+            <p>{{key}}</p>
+            <div style="padding-left:50px; border-bottom:1px solid green">
+                <p>state: {{value['state']}}</p>
+                <p>street: {{value['street']}}</p>
+                <p>node list: {{value['node_list']}}</p>
+                <p>sensor list: {{value['sensor_list']}}</p>
+            </div>
+
+            {% endfor %}
+        </div>
+    {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+    <body>
+    {% include 'nav.html' %}
+
+    {% block content %}
+
+    {% with messages = get_flashed_messages() %}
+     {% if messages %}
+        <ul>
+           {% for message in messages %}
+           <li<{{ message }}</li>
+           {% endfor %}
+        </ul>
+     {% endif %}
+    {% endwith %}
+
+
+
+        <div style="padding-left:16px">
+            <h2>Adding sensors to node</h2>
+            <form action = "" method = "POST">
+
+            Choose Node<br>
+            <select name = "node">
+                {% for key in node_database.keys() %}
+                    <option value= {{key}}>
+                        {{key}}
+                    </option>>
+                {% endfor %}
+            </select>
+            </br>
+
+            <p>Mark which Sensors to add</p>
+            <input type="checkbox" name="temp" value="temp"> Temperature sensor<br>
+            <input type="checkbox" name="pressure" value="pressure"> Pressure sensor<br>
+            <input type="checkbox" name="light" value="light"> Light sensor<br>
+            <input type="checkbox" name="humidity" value="humidity"> Humidity sensor<br><br>
+
+            <p><input type = "submit" value = "submit" /></p>
+            </form>
+
+            {% if error %}
+            <p><strong>Error:</strong> {{ error }}
+            {% endif %}
+
+        </div>
+    {% endblock %}
+    </body>
+</html>

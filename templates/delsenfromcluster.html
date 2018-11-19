@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <body>
+    {% include 'nav.html' %}
+
+    {% block content %}
+
+    {% with messages = get_flashed_messages() %}
+     {% if messages %}
+        <ul>
+           {% for message in messages %}
+           <li<{{ message }}</li>
+           {% endfor %}
+        </ul>
+     {% endif %}
+    {% endwith %}
+
+
+
+        <div style="padding-left:16px">
+            <h2>Choose cluster to delete all sensors from</h2>
+            <form action = "" method = "POST">
+
+
+            <select name = "cluster">
+                {% for key in cluster_database.keys() %}
+                    <option value= {{key}}>
+                        {{key}}
+                    </option>>
+                {% endfor %}
+            </select>
+            </br>
+
+            <p><input type = "submit" value = "submit" /></p>
+            </form>
+
+            {% if error %}
+            <p><strong>Error:</strong> {{ error }}
+            {% endif %}
+
+        </div>
+    {% endblock %}
+    </body>
+</html>
