@@ -18,11 +18,18 @@
 
 
         <div style="padding-left:16px">
-            <h2>Enter number of clusters to be added to the system</h2>
+            <h2>Choose node to delete all sensors from</h2>
             <form action = "" method = "POST">
 
-            Number<br><input type = "number" name = "number" min = '1' max = '100'><br>
-            Street<br><input type = "text" name = "street" /><br>
+
+            <select name = "node">
+                {% for key in node_database.keys() %}
+                    <option value= {{key}}>
+                        {{key}}
+                    </option>>
+                {% endfor %}
+            </select>
+            </br>
 
             <p><input type = "submit" value = "submit" /></p>
             </form>

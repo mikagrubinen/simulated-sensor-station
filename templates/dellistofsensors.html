@@ -18,11 +18,13 @@
 
 
         <div style="padding-left:16px">
-            <h2>Enter number of clusters to be added to the system</h2>
+            <h2>Delete list of Sensors</h2>
             <form action = "" method = "POST">
+            <p>Mark which Sensors to delete</p>
 
-            Number<br><input type = "number" name = "number" min = '1' max = '100'><br>
-            Street<br><input type = "text" name = "street" /><br>
+            {% for key in sensor_database.keys() %}
+            <input type="checkbox" name={{key}} value={{key}}> {{key}} <br>
+            {% endfor %}
 
             <p><input type = "submit" value = "submit" /></p>
             </form>

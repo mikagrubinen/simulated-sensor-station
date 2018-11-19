@@ -152,7 +152,7 @@ def delete_list_of_nodes(list):
 
 # Add sensors to a cluster or to a node.
 # @param list - list of types of sensors to be added (eg. ['temp', 'pressure'])
-def add_sensors(cluster_id = None, node_id = None, list = []):
+def add_sensors(list, cluster_id = None, node_id = None):
 
     if cluster_id is None and node_id is None:
         return "Error: Invalid input!"
@@ -163,7 +163,7 @@ def add_sensors(cluster_id = None, node_id = None, list = []):
     elif cluster_id is not None and node_id is None:
 
         cluster_database = load_obj(shared.cluster_database)
-        cluster_name = 'cluster' + str(cluster_id)
+        cluster_name = cluster_id
 
         if cluster_name in cluster_database:
 
@@ -182,13 +182,14 @@ def add_sensors(cluster_id = None, node_id = None, list = []):
                 cluster_database[cluster_name]["sensor_list"] = cluster_database[cluster_name]["sensor_list"] + sensor_to_list
                 save_obj(sensor_database, shared.sensor_database)
                 save_obj(cluster_database, shared.cluster_database)
+                return 0
         else:
             return "Error: Invalid cluster ID!"
 
     elif cluster_id is None and node_id is not None:
 
         node_database = load_obj(shared.node_database)
-        node_name = 'node' + str(node_id)
+        node_name = node_id
 
         if node_name in node_database:
 
@@ -207,6 +208,7 @@ def add_sensors(cluster_id = None, node_id = None, list = []):
                 node_database[node_name]["sensor_list"] = node_database[node_name]["sensor_list"] + sensor_to_list
                 save_obj(sensor_database, shared.sensor_database)
                 save_obj(node_database, shared.node_database)
+                return 0
         else:
             return "Error: Invalid node ID!"
 
@@ -222,7 +224,7 @@ def delete_sensors(cluster_id = None, node_id = None):
     elif cluster_id is not None and node_id is None:
 
         cluster_database = load_obj(shared.cluster_database)
-        cluster_name = 'cluster' + str(cluster_id)
+        cluster_name = cluster_id
 
         if cluster_name in cluster_database:
             sensors_to_delete = cluster_database[cluster_name]['sensor_list']
@@ -233,13 +235,14 @@ def delete_sensors(cluster_id = None, node_id = None):
                 delete_sensors_helper(sensors_to_delete)
                 cluster_database[cluster_name]["sensor_list"] = []
                 save_obj(cluster_database, shared.cluster_database)
+                return 0
         else:
             return "Error: Invalid cluster ID!"
 
     elif cluster_id is None and node_id is not None:
 
         node_database = load_obj(shared.node_database)
-        node_name = 'node' + str(node_id)
+        node_name = node_id
 
         if node_name in node_database:
             sensors_to_delete = node_database[node_name]['sensor_list']
@@ -250,6 +253,7 @@ def delete_sensors(cluster_id = None, node_id = None):
                 delete_sensors_helper(sensors_to_delete)
                 node_database[node_name]["sensor_list"] = []
                 save_obj(node_database, shared.node_database)
+                return 0
         else:
             return "Error: Invalid node ID!"
 
@@ -265,7 +269,7 @@ def delete_list_of_sensors(list = []):
         cluster_database = load_obj(shared.cluster_database)
 
         for item in list:
-            sensor_name = 'sensor' + str(item)
+            sensor_name = item
 
             if sensor_name in sensor_database:
 
@@ -284,6 +288,7 @@ def delete_list_of_sensors(list = []):
         save_obj(sensor_database, shared.sensor_database)
         save_obj(node_database, shared.node_database)
         save_obj(cluster_database, shared.cluster_database)
+        return 0
 
         if not return_list:
             return "Sensors deleted"
