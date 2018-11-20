@@ -9,7 +9,7 @@
      {% if messages %}
         <ul>
            {% for message in messages %}
-           <li>{{ message }}</li>
+           <li<{{ message }}</li>
            {% endfor %}
         </ul>
      {% endif %}
@@ -18,24 +18,13 @@
 
 
         <div style="padding-left:16px">
-            <h2>Enter number of Nodes to be added, and choose Cluster to which nodes will be connected</h2>
+            <h2>Delete list of Nodes</h2>
             <form action = "" method = "POST">
+            <p>Mark which Nodes to delete</p>
 
-            Number<br><input type = "number" name = "number" min = '1' max = '10'><br>
-
-            Cluster<br>
-            <select name = "cluster">
-                {% for key in cluster_database.keys() %}
-                    <option value= {{key}}>
-                        {{key}}
-                    </option>>
-                {% endfor %}
-            </select>
-            </br>
-
-
-
-                Street (optional)<br><input type = "text" name = "street" /><br>
+            {% for key in node_database.keys() %}
+            <input type="checkbox" name={{key}} value={{key}}> {{key}} <br>
+            {% endfor %}
 
             <p><input type = "submit" value = "submit" /></p>
             </form>

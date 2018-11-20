@@ -5,17 +5,27 @@
 
     {% block content %}
 
+    {% with messages = get_flashed_messages() %}
+     {% if messages %}
+        <ul>
+           {% for message in messages %}
+           <li<{{ message }}</li>
+           {% endfor %}
+        </ul>
+     {% endif %}
+    {% endwith %}
 
         <div style="padding-left:16px">
 
             {% for key, value in node_database.items() %}
 
             <p>{{key}}</p>
-            <div style="padding-left:50px; border-bottom:1px solid green">
+            <div style="padding-left:50px; padding-bottom:10px; border-bottom:1px solid green">
                 <p>state: {{value['state']}}</p>
                 <p>street: {{value['street']}}</p>
                 <p>cluster: {{value['cluster_id']}}</p>
                 <p>sensor list: {{value['sensor_list']}}</p>
+                <a href = "delnode/{{key}}" target = "_self">Delete this node</a>
             </div>
 
             {% endfor %}

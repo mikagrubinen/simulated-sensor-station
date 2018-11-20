@@ -15,18 +15,19 @@
      {% endif %}
     {% endwith %}
 
+
+
         <div style="padding-left:16px">
 
-            {% for key, value in sensor_database.items() %}
+            {% for key, value in cluster_database.items() %}
 
             <p>{{key}}</p>
             <div style="padding-left:50px; padding-bottom:10px; border-bottom:1px solid green">
                 <p>state: {{value['state']}}</p>
                 <p>street: {{value['street']}}</p>
-                <p>cluster: {{value['cluster_id']}}</p>
-                <p>node: {{value['node_id']}}</p>
-                <p>sensor type: {{value['sensor_type']}}</p>
-                <a href = "delsensor/{{key}}" target = "_self">Delete this sensor</a>
+                <p>node list: {{value['node_list']}}</p>
+                <p>sensor list: {{value['sensor_list']}}</p>
+                <a href = "updateclusterinfo/{{key}}" target = "_self" style="color:green">Update this cluster</a>
             </div>
 
             {% endfor %}

@@ -9,7 +9,7 @@
      {% if messages %}
         <ul>
            {% for message in messages %}
-           <li<{{ message }}</li>
+           <li>{{ message }}</li>
            {% endfor %}
         </ul>
      {% endif %}
@@ -22,11 +22,12 @@
             {% for key, value in cluster_database.items() %}
 
             <p>{{key}}</p>
-            <div style="padding-left:50px; border-bottom:1px solid green">
+            <div style="padding-left:50px; padding-bottom:10px; border-bottom:1px solid green">
                 <p>state: {{value['state']}}</p>
                 <p>street: {{value['street']}}</p>
                 <p>node list: {{value['node_list']}}</p>
                 <p>sensor list: {{value['sensor_list']}}</p>
+                <a href = "delcluster/{{key}}" target = "_self" style="color:green">Delete this cluster</a>
             </div>
 
             {% endfor %}

@@ -9,7 +9,7 @@
      {% if messages %}
         <ul>
            {% for message in messages %}
-           <li>{{ message }}</li>
+           <li<{{ message }}</li>
            {% endfor %}
         </ul>
      {% endif %}
@@ -17,16 +17,15 @@
 
         <div style="padding-left:16px">
 
-            {% for key, value in sensor_database.items() %}
+            {% for key, value in node_database.items() %}
 
             <p>{{key}}</p>
             <div style="padding-left:50px; padding-bottom:10px; border-bottom:1px solid green">
                 <p>state: {{value['state']}}</p>
                 <p>street: {{value['street']}}</p>
                 <p>cluster: {{value['cluster_id']}}</p>
-                <p>node: {{value['node_id']}}</p>
-                <p>sensor type: {{value['sensor_type']}}</p>
-                <a href = "delsensor/{{key}}" target = "_self">Delete this sensor</a>
+                <p>sensor list: {{value['sensor_list']}}</p>
+                <a href = "updatenodeinfo/{{key}}" target = "_self">Update this node</a>
             </div>
 
             {% endfor %}

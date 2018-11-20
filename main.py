@@ -2,18 +2,12 @@ import nodes
 import sensors
 import do
 import shared
+import get
 import json
 from flask import Flask, render_template, request, flash, redirect, url_for
 app = Flask(__name__)
 app.secret_key = 'random string'
 
-# @app.route("/")
-# def hello():
-#     return render_template("student.html")
-
-# @app.route('/')
-# def student():
-#     return render_template('student.html')
 ##########################################################################
 @app.route('/')
 def index():
@@ -23,26 +17,7 @@ def index():
 def messages():
     return render_template('messages.html')
 
-@app.route('/result', methods = ['POST', 'GET'])
-def result():
-    if request.method == 'POST':
-        result = request.form
-        return render_template("result.html",result = result)
-
-@app.route('/addcluster', methods = ['POST', 'GET'])
-def addcluster():
-    error = None
-    if request.method == 'POST':
-        number = int(request.form['number'])
-        street = request.form['street']
-        if number < 101:
-            if do.add_cluster(number, street) == 0:
-                flash('Clusters successfully added')
-                return redirect(url_for('messages'))
-        else:
-            error = 'Entered number must be less than or equal to 100'
-
-    return render_template("addcluster.html", error = error)
+################################################ INFO ################################################
 
 @app.route('/clustersinfo', methods = ['POST', 'GET'])
 def clustersinfo():
@@ -59,6 +34,59 @@ def sensorsinfo():
     sensor_database = do.load_obj(shared.sensor_database)
     return render_template("sensorsinfo.html", sensor_database = sensor_database)
 
+################################################ UPDATE ################################################
+
+@app.route('/updatecluster', methods = ['POST', 'GET'])
+def updatecluster():
+    cluster_database = do.load_obj(shared.cluster_database)
+    return render_template("updatecluster.html", cluster_database = cluster_database)
+
+@app.route('/updatenode', methods = ['POST', 'GET'])
+def updatenode():
+    node_database = do.load_obj(shared.node_database)
+    return render_template("updatenode.html", node_database=node_database)
+
+@app.route('/updatesensor', methods = ['POST', 'GET'])
+def updatesensor():
+    sensor_database = do.load_obj(shared.sensor_database)
+    return render_template("updatesensor.html", sensor_database = sensor_database)
+
+############################################# UPDATE INFO ################################################
+
+@app.route('/updatesensorinfo/<sensor>', methods = ['POST', 'GET'])
+def updatesensorinfo(sensor):
+    error = None
+    sensor_database = do.load_obj(shared.sensor_database)
+    sensor_info = sensor_database[sensor]
+
+    if request.method == 'POST':
+        if 0 == do.update_sensor_info(sensor, request.form):
+            flash(sensor + " info successfully updated")
+            return redirect(url_for('messages'))
+        else:
+            error = "Error"
+
+
+    return render_template("updatesensorinfo.html", error = error, sensor_info=sensor_info)
+
+################################################ DELETE ################################################
+
+@app.route('/delcluster/<cluster>', methods = ['POST', 'GET'])
+def delcluster(cluster):
+    list_to_delete = [cluster]
+    message = do.delete_list_of_clusters(list_to_delete)
+    if message == 0:
+        flash("Cluster successfully deleted")
+        return redirect(url_for('clustersinfo'))
+
+@app.route('/delnode/<node>', methods = ['POST', 'GET'])
+def delnode(node):
+    list_to_delete = [node]
+    message = do.delete_list_of_nodes(list_to_delete)
+    if message == 0:
+        flash("Node successfully deleted")
+        return redirect(url_for('nodesinfo'))
+
 @app.route('/delsensor/<sensor>', methods = ['POST', 'GET'])
 def delsensor(sensor):
     list_to_delete = [sensor]
@@ -66,6 +94,152 @@ def delsensor(sensor):
     if message == 0:
         flash("Sensor successfully deleted")
         return redirect(url_for('sensorsinfo'))
+
+############################################### GET DATA ###############################################
+
+
+@app.route('/getclusterdata/<cluster>', methods = ['POST', 'GET'])
+def getclusterdata(cluster):
+    cluster_database = do.load_obj(shared.cluster_database)
+    sensor_database = do.load_obj(shared.sensor_database)
+
+    cluster_sensor_list = cluster_database[cluster]['sensor_list']
+    message = cluster + " sensor data: || "
+    for item in cluster_sensor_list:
+        sensor_type = sensor_database[item]['sensor_type']
+
+        if sensor_type == 'temp':
+            temp = get.temperature()
+            message += "Temperature: " + str(temp) + " degF || "
+        if sensor_type == 'pressure':
+            pressure = get.pressure()
+            message += "Pressure: " + str(pressure) + " mbar || "
+        if sensor_type == 'humidity':
+            humidity = get.humidity()
+            message += "Humidity: " + str(humidity) + " % || "
+        if sensor_type == 'light':
+            light = get.light()
+            message += "Light: " + str(light) + " lux || "
+
+    flash(message)
+    return redirect(url_for('reqdatacluster'))
+
+
+@app.route('/getnodedata/<node>', methods = ['POST', 'GET'])
+def getnodedata(node):
+    node_database = do.load_obj(shared.node_database)
+    sensor_database = do.load_obj(shared.sensor_database)
+
+    node_sensor_list = node_database[node]['sensor_list']
+    message = node + " sensor data: || "
+    for item in node_sensor_list:
+        sensor_type = sensor_database[item]['sensor_type']
+
+        if sensor_type == 'temp':
+            temp = get.temperature()
+            message += "Temperature: " + str(temp) + " degF || "
+        if sensor_type == 'pressure':
+            pressure = get.pressure()
+            message += "Pressure: " + str(pressure) + " mbar || "
+        if sensor_type == 'humidity':
+            humidity = get.humidity()
+            message += "Humidity: " + str(humidity) + " % || "
+        if sensor_type == 'light':
+            light = get.light()
+            message += "Light: " + str(light) + " lux || "
+
+    flash(message)
+    return redirect(url_for('reqdatanode'))
+
+
+@app.route('/getsensordata/<sensor_type><sensor>', methods = ['POST', 'GET'])
+def getsensordata(sensor_type, sensor):
+
+    sensor_name = "sensor" + str(sensor)
+
+    if sensor_type == 'tempsensor':
+        value = get.temperature()
+        flash("Current readings for temperature sensor, " + sensor_name + " is: " + str(value) + " degF")
+    elif sensor_type == 'pressuresensor':
+        value = get.pressure()
+        flash("Current readings for pressure sensor, " + sensor_name + " is: " + str(value) + " mbar")
+    elif sensor_type == 'humiditysensor':
+        value = get.humidity()
+        flash("Current readings for humidity sensor, " + sensor_name + " is: " + str(value) + " %")
+    elif sensor_type == 'lightsensor':
+        value = get.light()
+        flash("Current readings for light sensor, " + sensor_name + " is: " + str(value) + " lux")
+
+    return redirect(url_for('reqdatasensor'))
+
+############################################# REQUEST DATA #############################################
+
+@app.route('/reqdatacluster', methods = ['POST', 'GET'])
+def reqdatacluster():
+    cluster_database = do.load_obj(shared.cluster_database)
+    return render_template("reqdatacluster.html", cluster_database=cluster_database)
+
+@app.route('/reqdatanode', methods = ['POST', 'GET'])
+def reqdatanode():
+    node_database = do.load_obj(shared.node_database)
+    return render_template("reqdatanode.html", node_database=node_database)
+
+@app.route('/reqdatasensor', methods = ['POST', 'GET'])
+def reqdatasensor():
+    sensor_database = do.load_obj(shared.sensor_database)
+    return render_template("reqdatasensor.html", sensor_database=sensor_database)
+
+################################################ DELETE LIST OF ################################################
+
+@app.route('/dellistofclusters', methods = ['POST', 'GET'])
+def dellistofclusters():
+    error = None
+    list = []
+    cluster_database = do.load_obj(shared.cluster_database)
+
+    if request.method == 'POST':
+
+        if request.form != {}:
+
+            for value in request.form.values():
+                list.append(value)
+
+            message = do.delete_list_of_clusters(list)
+
+            if message == 0:
+                flash("Clusters successfully deleted")
+                return redirect(url_for('messages'))
+            else:
+                error = "There was an error processing your request"
+        else:
+            error = "Must choose at least one cluster"
+
+    return render_template("dellistofclusters.html", error=error, cluster_database=cluster_database)
+
+@app.route('/dellistofnodes', methods = ['POST', 'GET'])
+def dellistofnodes():
+    error = None
+    list = []
+    node_database = do.load_obj(shared.node_database)
+
+    if request.method == 'POST':
+
+        if request.form != {}:
+
+            for value in request.form.values():
+                list.append(value)
+
+            message = do.delete_list_of_nodes(list)
+
+            if message == 0:
+                flash("Nodes successfully deleted")
+                return redirect(url_for('messages'))
+            else:
+                error = "There was an error processing your request"
+        else:
+            error = "Must choose at least one node"
+
+    return render_template("dellistofnodes.html", error=error, node_database=node_database)
 
 @app.route('/dellistofsensors', methods = ['POST', 'GET'])
 def dellistofsensors():
@@ -83,7 +257,7 @@ def dellistofsensors():
             message = do.delete_list_of_sensors(list)
 
             if message == 0:
-                flash("Sensor successfully deleted")
+                flash("Sensors successfully deleted")
                 return redirect(url_for('messages'))
             else:
                 error = "There was an error processing your request"
@@ -92,6 +266,7 @@ def dellistofsensors():
 
     return render_template("dellistofsensors.html", error = error, sensor_database = sensor_database)
 
+############################################ DELETE FROM CLUSTER AND NODE ############################################
 
 @app.route('/delsenfromcluster', methods = ['POST', 'GET'])
 def delsenfromcluster():
@@ -127,6 +302,22 @@ def delsenfromnode():
 
     return render_template("delsenfromnode.html", error=error, node_database=node_database)
 
+###################################################### ADD #######################################################
+
+@app.route('/addcluster', methods = ['POST', 'GET'])
+def addcluster():
+    error = None
+    if request.method == 'POST':
+        number = int(request.form['number'])
+        street = request.form['street']
+        if number < 101:
+            if do.add_cluster(number, street) == 0:
+                flash('Clusters successfully added')
+                return redirect(url_for('messages'))
+        else:
+            error = 'Entered number must be less than or equal to 100'
+
+    return render_template("addcluster.html", error = error)
 
 @app.route('/addnode', methods = ['POST', 'GET'])
 def addnode():
