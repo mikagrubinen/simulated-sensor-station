@@ -5,6 +5,11 @@
 
     {% block content %}
 
+
+
+        <div style="padding-left:16px">
+            <h2>Request current data readings from all sensors connected to a node</h2>
+
     {% with messages = get_flashed_messages() %}
      {% if messages %}
         <ul>
@@ -15,18 +20,12 @@
      {% endif %}
     {% endwith %}
 
-        <div style="padding-left:16px">
-
-            {% for key, value in sensor_database.items() %}
+            {% for key, value in node_database.items() %}
 
             <p>{{key}}</p>
             <div style="padding-left:50px; padding-bottom:10px; border-bottom:1px solid green">
-                <p>state: {{value['state']}}</p>
-                <p>street: {{value['street']}}</p>
-                <p>cluster: {{value['cluster_id']}}</p>
-                <p>node: {{value['node_id']}}</p>
-                <p>sensor type: {{value['sensor_type']}}</p>
-                <a href = "delsensor/{{key}}" target = "_self">Delete this sensor</a>
+                <p>node: {{key}}</p>
+                <a href = "getnodedata/{{key}}" target = "_self">Request data from this node</a>
             </div>
 
             {% endfor %}

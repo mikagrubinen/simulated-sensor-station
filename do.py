@@ -55,13 +55,14 @@ def delete_list_of_clusters(list):
     cluster_database = load_obj(shared.cluster_database)
 
     for item in list:
-        cluster_name = 'cluster' + str(item)
+        cluster_name = item
         if cluster_name in cluster_database:
             del cluster_database[cluster_name]
         else:
             return_list.append(cluster_name)
 
     save_obj(cluster_database, shared.cluster_database)
+    return 0
 
     if not return_list:
         return "Clusters deleted"
@@ -131,7 +132,7 @@ def delete_list_of_nodes(list):
     cluster_database = load_obj(shared.cluster_database)
 
     for item in list:
-        node_name = 'node' + str(item)
+        node_name = item
 
         if node_name in node_database:
             cluster_name = node_database[node_name]['cluster_id']
@@ -142,6 +143,7 @@ def delete_list_of_nodes(list):
 
     save_obj(node_database, shared.node_database)
     save_obj(cluster_database, shared.cluster_database)
+    return 0
 
     if not return_list:
         return "Nodes deleted"
@@ -294,6 +296,17 @@ def delete_list_of_sensors(list = []):
             return "Sensors deleted"
         else:
             return "Sensors " + str(return_list) + " not deleted. Not in a system."
+
+
+# Update sensors info
+def update_sensor_info(sensor, info):
+    sensor_database = load_obj(shared.sensor_database)
+    sensor_database[sensor]['state'] = info['state']
+    sensor_database[sensor]['street'] = info['street']
+    save_obj(sensor_database, shared.sensor_database)
+    return 0
+
+
 
 # Helper function to delete sensors
 # @param sensors_to_delete - list of sensors to be deleted
